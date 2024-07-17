@@ -1,0 +1,5 @@
+backend/backend/__pycache__
+backend/base/__pycache__
+backend/base/api/__pycache__
+backend/base/migrations/
+backend/db.sqlite3
