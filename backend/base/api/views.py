@@ -38,13 +38,16 @@ def register_user(request):
 
     username = request.data.get("username")
     password = request.data.get("password")
+    firstname = request.data.get("firstname")
+    lastname = request.data.get("lastname")
+    email = request.data.get("email")
 
     user = User.objects.filter(username = username)
 
     if user.exists():
         return HttpResponse("User already exists", status=409)
 
-    user = User.objects.create_user(username = username, password = password)        
+    user = User.objects.create_user(username = username, password = password, first_name = firstname, last_name = lastname, email = email)
     user.save()
 
     return HttpResponse("User created successfully", status=201)
