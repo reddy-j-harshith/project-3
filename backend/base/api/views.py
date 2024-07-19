@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+# Create your views here.
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -32,22 +33,18 @@ def getRoutes(request):
 
     return Response(routes)
 
-# Create your views here.
+@view(['POST'])
 def register_user(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
 
-        user = User.objects.filter(username = username)
+    username = request.data.get("username")
+    password = request.data.get("password")
 
-        if user.exists():
-            messages.info(request, "User already exists")
-            return HttpResponse.status_code(409, "User already exists")
+    user = User.objects.filter(username = username)
 
-        user = User.objects.create_user(username = username, password = password)        
-        user.save()
+    if user.exists():
+        return HttpResponse("User already exists", status=409)
 
-        messages.info(request, "User created successfully")
-        return HttpResponse.status_code(200, "User created successfully")
-        
-    return HttpResponse.status_code(400, "Bad request")
+    user = User.objects.create_user(username = username, password = password)        
+    user.save()
+
+    return HttpResponse("User created successfully", status=201)
