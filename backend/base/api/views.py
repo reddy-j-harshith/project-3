@@ -1,13 +1,16 @@
 from django.http import JsonResponse
 from rest_framework.response import Response
-from rest_framework.decorators import api_view as view
+from rest_framework.decorators import api_view as view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth.models import User
-from django.contrib import messages
 from django.http import HttpResponse
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .serializers import NoteSerializer
+from base.models import Note
 
 # Create your views here.
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -51,3 +54,11 @@ def register_user(request):
     user.save()
 
     return HttpResponse("User created successfully", status=201)
+
+@view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_notes(request):
+    user = request.user
+    notes = user.note_set.all()
+    serializer = NoteSerializer(notes, many = True)
+    return Response(serializer.data)
