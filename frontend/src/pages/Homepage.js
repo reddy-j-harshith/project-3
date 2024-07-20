@@ -3,8 +3,9 @@ import AuthContext from '../context/AuthContext'
 
 const Homepage = () => {
 
-  let [notes, setNotes] = useState([])
+  let [ notes, setNotes ] = useState([])
   let { authTokens } = useContext(AuthContext)
+  let logout = useContext(AuthContext)
 
   useEffect(() => {
     getNotes()
@@ -19,7 +20,12 @@ const Homepage = () => {
       }
     })
     let data = await response.json()
-    setNotes(data)
+
+    if(response.status === 200){
+        setNotes(data)
+    } else if (response.status === 401) {
+        logout()
+    }
   }
 
   return (
